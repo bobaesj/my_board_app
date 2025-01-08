@@ -1,0 +1,63 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.1'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.bit'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot Starter JPA: JPA와 Hibernate를 쉽게 사용할 수 있도록 해주는 기본 라이브러리
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Spring Boot Starter Web: 웹 애플리케이션 개발을 위한 기본 라이브러리 (선택사항, 웹 개발 시 사용)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // Lombok: 코드 간소화를 위한 라이브러리 (선택사항, getter, setter 자동 생성 등)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // DevTools: 개발 편의성을 위한 라이브러리 (선택사항, 개발 환경에서만 사용)
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    // JWT 라이브러리의 API 모듈 의존성
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+
+    // JWT 구현체와 의존성 포함 (필수는 아니지만 권장됨)
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'
+
+    // Jackson을 사용한 JSON 처리를 위해 추가
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // MySQL Connector: MySQL 데이터베이스와 연결하기 위한 드라이버
+    runtimeOnly 'com.mysql:mysql-connector-j'
+
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
+
+    // Test 라이브러리 (선택사항, 테스트 환경에서만 사용)
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
