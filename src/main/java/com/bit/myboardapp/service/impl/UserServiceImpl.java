@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +50,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto login(UserDto userDto) {
-
         User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(
                 () -> new RuntimeException("email not exist")
         );
@@ -64,9 +65,42 @@ public class UserServiceImpl implements UserService {
         UserDto loginUserDto = user.toDto();
         loginUserDto.setPassword("");
         loginUserDto.setToken(jwtProvider.createJwt(user));
-
-        System.out.println("loginUserDto: " + loginUserDto);
         return loginUserDto;
     }
 
+    @Override
+    public Map<String, String> emailCheck(UserDto userDto) {
+        Map<String, String> emailCheckMap = new HashMap<>();
+
+        if (userRepository.countByEmail(userDto.getEmail()) == 0) {
+            emailCheckMap.put("emailCheckMsg", "available email");
+        } else {
+            emailCheckMap.put("emailCheckMsg", "not available email");
+        }
+        return emailCheckMap;
+    }
+
+    @Override
+    public Map<String, String> nicknameCheck(UserDto userDto) {
+        Map<String, String> nicknameCheckMap = new HashMap<>();
+
+        if (userRepository.countByNickname(userDto.getNickname()) == 0) {
+            nicknameCheckMap.put("nicknameCheckMsg", "available nickname");
+        } else {
+            nicknameCheckMap.put("nicknameCheckMsg", "not available nickname");
+        }
+        return nicknameCheckMap;
+    }
+
+    @Override
+    public Map<String, String> telCheck(UserDto userDto) {
+        Map<String, String> telCheckMap = new HashMap<>();
+
+        if (userRepository.countByTel(userDto.getTel()) == 0) {
+            telCheckMap.put("telCheckMsg", "available tel");
+        } else {
+            telCheckMap.put("telCheckMsg", "not available tel");
+        }
+        return telCheckMap;
+    }
 }

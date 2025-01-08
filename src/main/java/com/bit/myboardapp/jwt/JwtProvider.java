@@ -19,7 +19,8 @@ public class JwtProvider {
     SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
     public String createJwt(User user){
-        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
+        // 현재 시간부터 1시간 뒤를 토큰 만료 시간으로 설정
+        Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS256)
                 .subject(user.getEmail())
