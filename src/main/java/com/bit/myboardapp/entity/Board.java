@@ -1,9 +1,11 @@
 package com.bit.myboardapp.entity;
 
+import com.bit.myboardapp.dto.BoardDto;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(
@@ -35,4 +37,15 @@ public class Board {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
+    public BoardDto toDto() {
+        return BoardDto.builder()
+                .title(title)
+                .content(content)
+                .createdDate(createdDate)
+                .modifiedDate(modifiedDate)
+                .build();
+    }
 }
