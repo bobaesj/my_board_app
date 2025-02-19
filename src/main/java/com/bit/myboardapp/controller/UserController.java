@@ -147,4 +147,25 @@ public class UserController {
             return ResponseEntity.internalServerError().body(responseDto);
         }
     }
+
+    // 유저 정보 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        ResponseDto<UserDto> responseDto = new ResponseDto<>();
+
+        try{
+            log.info("getUserById id: {}", id);
+            UserDto userInfo = userService.getUserById(id);
+            responseDto.setStatusCode(HttpStatus.OK.value());
+            responseDto.setStatusMessage("ok");
+            responseDto.setItem(userInfo);
+            return ResponseEntity.ok(responseDto);
+        } catch (Exception e){
+            log.error("getUserById error: {}", e.getMessage());
+            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            responseDto.setStatusMessage(e.getMessage());
+            return ResponseEntity.internalServerError().body(responseDto);
+        }
+    }
+
 }

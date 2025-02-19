@@ -51,8 +51,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto login(UserDto userDto) {
         User user = userRepository.findByEmail(userDto.getEmail()).orElseThrow(
-                () -> new RuntimeException("email not exist")
-        );
+                () -> new RuntimeException("email not exist"));
 
         if (!passwordEncoder.matches(userDto.getPassword(), user.getPassword())) {
             throw new RuntimeException("wrong password");
@@ -102,5 +101,13 @@ public class UserServiceImpl implements UserService {
             telCheckMap.put("telCheckMsg", "not available tel");
         }
         return telCheckMap;
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("info not exist"));
+
+        return user.toDto();
     }
 }

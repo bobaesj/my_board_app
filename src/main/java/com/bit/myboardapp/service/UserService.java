@@ -15,4 +15,6 @@ public interface UserService {
     Map<String, String> nicknameCheck(UserDto userDto);
 
     Map<String, String> telCheck(UserDto userDto);
+
+    UserDto getUserById(Long id);
 }
