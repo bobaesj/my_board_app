@@ -42,6 +42,8 @@ public class Board {
 
     public BoardDto toDto() {
         return BoardDto.builder()
+                .boardId(boardId)
+                .userId(user.getUserId())
                 .title(title)
                 .content(content)
                 .createdDate(createdDate)

@@ -28,7 +28,7 @@ public class BoardDto {
                 .boardId(boardId)
                 .title(title)
                 .content(content)
-                .createdDate(createdDate)
+                .createdDate(LocalDateTime.now())
                 .modifiedDate(modifiedDate)
                 .user(user)
                 .build();
