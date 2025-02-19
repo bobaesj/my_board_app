@@ -18,6 +18,7 @@ public class JwtProvider {
 
     SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
 
+    // JWT 생성
     public String createJwt(User user){
         Date expireDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
         return Jwts.builder()
@@ -29,6 +30,7 @@ public class JwtProvider {
                 .compact();
     }
 
+    // JWT 유효성 검증
     public String validatedAndGetSubject(String token){
 
         try{
