@@ -11,4 +11,5 @@ public interface BoardService {
 
     BoardDto post(BoardDto boardDto, String email);
 
+    BoardDto updateBoard(Long boardId, BoardDto boardDto);
 }

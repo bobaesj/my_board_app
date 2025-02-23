@@ -35,4 +35,17 @@ public class BoardServiceImpl implements BoardService {
         Board board = boardDto.toEntity(user); // User 정보 매핑
         return boardRepository.save(board).toDto();
     }
+
+    @Override
+    public BoardDto updateBoard(Long boardId, BoardDto boardDto) {
+
+        Board existingboard = boardRepository.findById(boardId).orElseThrow(
+                () -> new IllegalArgumentException("Board with id " + boardId + " not found")
+        );
+
+        existingboard.setTitle(boardDto.getTitle() != null ? boardDto.getTitle() : existingboard.getTitle());
+        existingboard.setContent(boardDto.getContent() != null ? boardDto.getContent() : existingboard.getContent());
+
+        return boardRepository.save(existingboard).toDto();
+    }
 }
