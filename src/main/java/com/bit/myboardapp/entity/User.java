@@ -2,6 +2,10 @@ package com.bit.myboardapp.entity;
 
 
 import com.bit.myboardapp.dto.UserDto;
+import com.bit.myboardapp.entity.converter.UserGenderConverter;
+import com.bit.myboardapp.entity.converter.UserStatusConverter;
+import com.bit.myboardapp.entity.enums.UserGender;
+import com.bit.myboardapp.entity.enums.UserStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,7 +36,10 @@ public class User {
     private String password;
     private String nickname;
     private String tel;
+
+    @Convert(converter = UserGenderConverter.class)
     private UserGender gender;
+    @Convert(converter = UserStatusConverter.class)
     private UserStatus status;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;

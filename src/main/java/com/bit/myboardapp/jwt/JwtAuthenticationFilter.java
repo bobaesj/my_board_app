@@ -48,10 +48,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             log.info("Parse JWT Token: {}", token);
 
             if(token != null && !token.equalsIgnoreCase("null")) {
-                String Email = jwtProvider.validatedAndGetSubject(token);
-                log.info("Email from JWT Token: {}", Email);
+                String email = jwtProvider.validatedAndGetSubject(token);
+                log.info("email from JWT Token: {}", email);
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(Email);
+                request.setAttribute("userEmail", email);
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 log.info("UserDetails: {}", userDetails);
 
                 AbstractAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -62,7 +64,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContext securityContext = SecurityContextHolder.getContext();
                 securityContext.setAuthentication(authenticationToken);
                 SecurityContextHolder.setContext(securityContext);
-                log.info("Authentication token set in SecurityContext for user: {}", Email);
+                log.info("Authentication token set in SecurityContext for user: {}", email);
             }
         } catch (ExpiredJwtException e){
             log.error("Expired JWT Token: {}", e.getMessage());

@@ -2,6 +2,7 @@ package com.bit.myboardapp.dto;
 
 import com.bit.myboardapp.entity.Board;
 import com.bit.myboardapp.entity.User;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,9 @@ public class BoardDto {
 
     private Long boardId;
     private Long userId;
+    @NotBlank(message = "제목은 필수입니다.")
     private String title;
+    @NotBlank(message = "내용은 필수입니다.")
     private String content;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;

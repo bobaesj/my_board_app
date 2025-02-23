@@ -1,8 +1,8 @@
 package com.bit.myboardapp.dto;
 
 import com.bit.myboardapp.entity.User;
-import com.bit.myboardapp.entity.UserGender;
-import com.bit.myboardapp.entity.UserStatus;
+import com.bit.myboardapp.entity.enums.UserGender;
+import com.bit.myboardapp.entity.enums.UserStatus;
 import lombok.*;
 
 import java.time.LocalDateTime;

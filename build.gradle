@@ -30,6 +30,9 @@ dependencies {
 
     // Spring Boot Starter Web: 웹 애플리케이션 개발을 위한 기본 라이브러리 (선택사항, 웹 개발 시 사용)
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    // Jakarta Bean Validation API 추가
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 
     // Lombok: 코드 간소화를 위한 라이브러리 (선택사항, getter, setter 자동 생성 등)
     compileOnly 'org.projectlombok:lombok'

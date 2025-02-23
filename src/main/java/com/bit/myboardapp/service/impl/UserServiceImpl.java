@@ -2,7 +2,7 @@ package com.bit.myboardapp.service.impl;
 
 import com.bit.myboardapp.dto.UserDto;
 import com.bit.myboardapp.entity.User;
-import com.bit.myboardapp.entity.UserStatus;
+import com.bit.myboardapp.entity.enums.UserStatus;
 import com.bit.myboardapp.jwt.JwtProvider;
 import com.bit.myboardapp.repository.UserRepository;
 import com.bit.myboardapp.service.UserService;

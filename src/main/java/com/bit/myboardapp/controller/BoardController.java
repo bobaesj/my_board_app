@@ -2,13 +2,16 @@ package com.bit.myboardapp.controller;
 
 import com.bit.myboardapp.dto.BoardDto;
 import com.bit.myboardapp.dto.ResponseDto;
-import com.bit.myboardapp.jwt.JwtProvider;
+import com.bit.myboardapp.entity.Board;
 import com.bit.myboardapp.service.BoardService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,31 +20,37 @@ import org.springframework.web.bind.annotation.*;
 public class BoardController {
 
     private final BoardService boardService;
-    private final JwtProvider jwtProvider;
+
+    // 게시글 조회
+    @GetMapping
+    public ResponseEntity<?> search(@RequestParam(required = false) String title,
+                                    @RequestParam(required = false) String nickname) {
+        ResponseDto<List<Board>> responseDto = new ResponseDto<>();
+        log.info("search title: {}, nickname: {}", title, nickname);
+
+        List<Board> searchResult = boardService.findBoards(title, nickname);
+
+        responseDto.setStatusCode(HttpStatus.OK.value());
+        responseDto.setStatusMessage("ok");
+        responseDto.setItem(searchResult);
+
+        return ResponseEntity.ok(responseDto);
+    }
 
     // 게시글 등록
     @PostMapping("/post")
-    public ResponseEntity<?> post(@RequestBody BoardDto boardDto,
-                                  @RequestHeader("Authorization") String authHeader) {
+    public ResponseEntity<?> post(
+            @RequestBody BoardDto boardDto, HttpServletRequest request){
         ResponseDto<BoardDto> responseDto = new ResponseDto<>();
-        String token = authHeader.replace("Bearer ", ""); // Bearer 제거
-        String email = jwtProvider.validatedAndGetSubject(token); // JWT에서 email(subject) 추출
+        String email = (String) request.getAttribute("userEmail");
 
-        try {
-            log.info("post boardDto: {}", boardDto);
-            BoardDto postBoardDto = boardService.post(boardDto, email);
+        log.info("post boardDto: {}", boardDto);
+        BoardDto postBoardDto = boardService.post(boardDto, email);
 
-            responseDto.setStatusCode(HttpStatus.CREATED.value());
-            responseDto.setStatusMessage("created");
-            responseDto.setItem(postBoardDto);
+        responseDto.setStatusCode(HttpStatus.CREATED.value());
+        responseDto.setStatusMessage("created");
+        responseDto.setItem(postBoardDto);
 
-            return ResponseEntity.ok(responseDto);
-        } catch (Exception e){
-            log.error("post error: {}", e.getMessage());
-            responseDto.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            responseDto.setStatusMessage(e.getMessage());
-            return ResponseEntity.internalServerError().body(responseDto);
-        }
+        return ResponseEntity.ok(responseDto);
     }
-    // 게시글 조회
 }

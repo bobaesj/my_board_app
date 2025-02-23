@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +19,12 @@ public class BoardServiceImpl implements BoardService {
 
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
+
+    @Override
+    public List<Board> findBoards(String title, String nickname) {
+
+        return boardRepository.findByTitleAndNickname(title, nickname);
+    }
 
     @Override
     public BoardDto post(BoardDto boardDto, String email) {
