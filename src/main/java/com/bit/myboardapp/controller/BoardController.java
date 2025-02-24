@@ -44,7 +44,7 @@ public class BoardController {
         ResponseDto<BoardDto> responseDto = new ResponseDto<>();
         String email = (String) request.getAttribute("userEmail");
 
-        log.info("post boardDto: {}", boardDto);
+        log.info("post boardDto with files: {}", boardDto);
         BoardDto postBoardDto = boardService.post(boardDto, email);
 
         responseDto.setStatusCode(HttpStatus.CREATED.value());

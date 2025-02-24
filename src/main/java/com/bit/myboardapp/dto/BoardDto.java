@@ -25,6 +25,8 @@ public class BoardDto {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
     private List<CommentDto> comments;
+    private List<BoardFileDto> boardFiles;
+    private List<Long> deleteFileIds;
 
     public Board toEntity(User user) {
         return Board.builder()

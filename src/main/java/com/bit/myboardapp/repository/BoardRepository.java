@@ -1,6 +1,5 @@
 package com.bit.myboardapp.repository;
 
-import com.bit.myboardapp.dto.BoardDto;
 import com.bit.myboardapp.entity.Board;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
