@@ -2,14 +2,8 @@ package com.bit.myboardapp.service.impl;
 
 import com.bit.myboardapp.dto.BoardDto;
 import com.bit.myboardapp.dto.CommentDto;
-import com.bit.myboardapp.entity.Board;
-import com.bit.myboardapp.entity.BoardFile;
-import com.bit.myboardapp.entity.Comment;
-import com.bit.myboardapp.entity.User;
-import com.bit.myboardapp.repository.BoardFileRepository;
-import com.bit.myboardapp.repository.BoardRepository;
-import com.bit.myboardapp.repository.CommentRepository;
-import com.bit.myboardapp.repository.UserRepository;
+import com.bit.myboardapp.entity.*;
+import com.bit.myboardapp.repository.*;
 import com.bit.myboardapp.service.BoardService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,10 +22,12 @@ public class BoardServiceImpl implements BoardService {
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
     private final CommentRepository commentRepository;
+    private final NotificationRepository notificationRepository;
 
     @Override
-    public List<Board> findBoards(String title, String nickname) {
-        return boardRepository.findByTitleAndNickname(title, nickname);
+    public List<BoardDto> findBoards(String title, String nickname) {
+
+        return boardRepository.findByTitleAndNickname(title, nickname).stream().map(Board::toDto).toList();
     }
 
     @Override
@@ -134,14 +130,14 @@ public class BoardServiceImpl implements BoardService {
         increaseViewCount(board);
         BoardDto boardDto = board.toDto();
 
-        List<CommentDto> commentDtos = board.getComments().stream()
+        List<CommentDto> commentDtoList = board.getComments().stream()
                 .map(comment -> {
                     CommentDto commentDto = new CommentDto(comment);
                     commentDto.setNickname(comment.getUser().getNickname());
                     return commentDto;
                 }).toList();
 
-        boardDto.setComments(commentDtos);
+        boardDto.setComments(commentDtoList);
 
         return boardDto;
     }
@@ -165,6 +161,18 @@ public class BoardServiceImpl implements BoardService {
                 .user(user).build();
 
         commentRepository.save(comment);
+
+        if(!board.getUser().getEmail().equals(email)){
+            Notification notification = Notification.builder()
+                    .user(board.getUser())
+                    .sender(user)
+                    .content("댓글 알람!!")
+                    .relatedEntityId(comment.getCommentId())
+                    .createdDate(LocalDateTime.now())
+                    .build();
+
+            notificationRepository.save(notification);
+        }
 
         CommentDto resultCommentDto = new CommentDto(comment);
         resultCommentDto.setNickname(user.getNickname());

@@ -24,4 +24,5 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
             "LEFT JOIN FETCH c.user " +
             "WHERE b.boardId = :boardId")
     Optional<Board> findByIdWithComments(@Param("boardId") Long boardId);
+
 }

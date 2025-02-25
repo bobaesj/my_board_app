@@ -1,5 +1,6 @@
 package com.bit.myboardapp.entity;
 
+import com.bit.myboardapp.dto.NotificationDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,22 +28,24 @@ public class Notification {
     private Long noticeId;
 
     @ManyToOne
-    @JoinColumn(name = "receiverId", referencedColumnName = "userId", nullable = false)
+    @JoinColumn(name = "receiverId", referencedColumnName = "userId")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "senderId", referencedColumnName = "userId", nullable = false)
+    @JoinColumn(name = "senderId", referencedColumnName = "userId")
     private User sender;
 
-    @Column(nullable = false)
-    private boolean isRead = false;
-
-    @Column(nullable = false)
     private String content;
-
-    @Column(nullable = false)
     private Long relatedEntityId;
+    private LocalDateTime createdDate;
 
-    @Column(nullable = false)
-    private LocalDateTime createdDate = LocalDateTime.now();
+    public NotificationDto toDto() {
+        return NotificationDto.builder()
+                .noticeId(noticeId)
+                .receiverId(user.getUserId())
+                .senderId(sender.getUserId())
+                .content(getContent())
+                .createdDate(getCreatedDate())
+                .build();
+    }
 }

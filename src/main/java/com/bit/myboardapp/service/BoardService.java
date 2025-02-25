@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BoardService {
 
-    List<Board> findBoards(String title, String nickname);
+    List<BoardDto> findBoards(String title, String nickname);
 
     BoardDto post(BoardDto boardDto, String email);
 

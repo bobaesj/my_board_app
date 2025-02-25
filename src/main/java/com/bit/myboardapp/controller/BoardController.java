@@ -4,7 +4,6 @@ import com.bit.myboardapp.dto.BoardDto;
 import com.bit.myboardapp.dto.CommentDto;
 import com.bit.myboardapp.dto.ResponseDto;
 import com.bit.myboardapp.entity.Board;
-import com.bit.myboardapp.entity.Comment;
 import com.bit.myboardapp.service.BoardService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +26,10 @@ public class BoardController {
     @GetMapping
     public ResponseEntity<?> search(@RequestParam(required = false) String title,
                                     @RequestParam(required = false) String nickname) {
-        ResponseDto<List<Board>> responseDto = new ResponseDto<>();
+        ResponseDto<List<BoardDto>> responseDto = new ResponseDto<>();
         log.info("search title: {}, nickname: {}", title, nickname);
 
-        List<Board> searchResult = boardService.findBoards(title, nickname);
+        List<BoardDto> searchResult = boardService.findBoards(title, nickname);
 
         responseDto.setStatusCode(HttpStatus.OK.value());
         responseDto.setStatusMessage("ok");
