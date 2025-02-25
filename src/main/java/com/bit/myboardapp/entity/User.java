@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(
@@ -43,6 +44,9 @@ public class User {
     private UserStatus status;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
 
     public UserDto toDto() {
         return UserDto.builder()

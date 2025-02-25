@@ -1,7 +1,10 @@
 package com.bit.myboardapp.entity;
 
+import com.bit.myboardapp.dto.NotificationDto;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Entity
 @SequenceGenerator(
@@ -27,6 +30,22 @@ public class Notification {
     @ManyToOne
     @JoinColumn(name = "receiverId", referencedColumnName = "userId")
     private User user;
-    private int senderId;
+
+    @ManyToOne
+    @JoinColumn(name = "senderId", referencedColumnName = "userId")
+    private User sender;
+
     private String content;
+    private Long relatedEntityId;
+    private LocalDateTime createdDate;
+
+    public NotificationDto toDto() {
+        return NotificationDto.builder()
+                .noticeId(noticeId)
+                .receiverId(user.getUserId())
+                .senderId(sender.getUserId())
+                .content(getContent())
+                .createdDate(getCreatedDate())
+                .build();
+    }
 }

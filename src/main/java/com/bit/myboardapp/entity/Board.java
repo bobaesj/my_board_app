@@ -1,6 +1,7 @@
 package com.bit.myboardapp.entity;
 
 import com.bit.myboardapp.dto.BoardDto;
+import com.bit.myboardapp.dto.BoardFileDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,8 +38,15 @@ public class Board {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private Long viewCount = 0L;
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<BoardFile> boardFiles;
 
     public BoardDto toDto() {
         return BoardDto.builder()
@@ -48,6 +56,20 @@ public class Board {
                 .content(content)
                 .createdDate(createdDate)
                 .modifiedDate(modifiedDate)
+                .viewCount(viewCount)
+                .boardFiles(
+                        boardFiles != null
+                                ? boardFiles.stream()
+                                .map(file -> BoardFileDto.builder()
+                                        .fileId(file.getFileId())
+                                        .fileName(file.getFileName())
+                                        .filePath(file.getFilePath())
+                                        .fileType(file.getFileType())
+                                        .fileSize(file.getFileSize())
+                                        .build())
+                                .toList()
+                                : null
+                )
                 .build();
     }
 }

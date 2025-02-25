@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionhandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ResponseDto<Void>> handleRuntimeException(RuntimeException e){
@@ -23,6 +23,14 @@ public class GlobalExceptionhandler {
         responseDto.setStatusCode(HttpStatus.BAD_REQUEST.value());
         responseDto.setStatusMessage(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ResponseDto<Void>> handleSecurityException(SecurityException ex) {
+        ResponseDto<Void> responseDto = new ResponseDto<>();
+        responseDto.setStatusCode(HttpStatus.FORBIDDEN.value());
+        responseDto.setStatusMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseDto);
     }
 
 }
