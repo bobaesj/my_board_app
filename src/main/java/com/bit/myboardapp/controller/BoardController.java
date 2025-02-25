@@ -68,4 +68,19 @@ public class BoardController {
 
         return ResponseEntity.ok(responseDto);
     }
+
+    // 게시글 상세 정보 API
+    @GetMapping("/{boardId}")
+    public ResponseEntity<?> getBoardById(@PathVariable Long boardId){
+        ResponseDto<BoardDto> responseDto = new ResponseDto<>();
+
+        log.info("getBoardById boardId: {}", boardId);
+
+        BoardDto boardDto = boardService.getBoardById(boardId);
+        responseDto.setStatusCode(HttpStatus.OK.value());
+        responseDto.setStatusMessage("ok");
+        responseDto.setItem(boardDto);
+
+        return ResponseEntity.ok(responseDto);
+    }
 }

@@ -38,6 +38,9 @@ public class Board {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
+    @Column(nullable = false)
+    private Long viewCount = 0L;
+
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Comment> comments;
 
@@ -52,6 +55,7 @@ public class Board {
                 .content(content)
                 .createdDate(createdDate)
                 .modifiedDate(modifiedDate)
+                .viewCount(viewCount)
                 .boardFiles(
                         boardFiles != null
                                 ? boardFiles.stream()

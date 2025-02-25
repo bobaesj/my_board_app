@@ -8,6 +8,7 @@ import com.bit.myboardapp.repository.BoardFileRepository;
 import com.bit.myboardapp.repository.BoardRepository;
 import com.bit.myboardapp.repository.UserRepository;
 import com.bit.myboardapp.service.BoardService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class BoardServiceImpl implements BoardService {
 
         // User 정보 매핑
         Board board = boardDto.toEntity(user);
+        board.setCreatedDate(java.time.LocalDateTime.now());
 
         // BoardFile 엔티티 생성 및 값 세팅
         if (boardDto.getBoardFiles() != null && !boardDto.getBoardFiles().isEmpty()) {
@@ -108,5 +110,24 @@ public class BoardServiceImpl implements BoardService {
 
         // 저장된 게시글 Dto 반환
         return boardRepository.save(existingBoard).toDto();
+    }
+
+    @Override
+    public BoardDto getBoardById(Long boardId) {
+
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                () -> new IllegalArgumentException("Board with id " + boardId + " not found")
+        );
+
+        // 조휘수 증가
+        increaseViewCount(board);
+
+        return board.toDto();
+    }
+
+    @Transactional
+    public void increaseViewCount(Board board) {
+        board.setViewCount(board.getViewCount() + 1);
+        boardRepository.save(board);
     }
 }

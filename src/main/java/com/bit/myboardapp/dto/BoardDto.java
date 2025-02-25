@@ -24,6 +24,7 @@ public class BoardDto {
     private String content;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
+    private Long viewCount;
     private List<CommentDto> comments;
     private List<BoardFileDto> boardFiles;
     private List<Long> deleteFileIds;
@@ -33,8 +34,9 @@ public class BoardDto {
                 .boardId(boardId)
                 .title(title)
                 .content(content)
-                .createdDate(LocalDateTime.now())
+                .createdDate(createdDate)
                 .modifiedDate(modifiedDate)
+                .viewCount(viewCount)
                 .user(user)
                 .build();
     }
