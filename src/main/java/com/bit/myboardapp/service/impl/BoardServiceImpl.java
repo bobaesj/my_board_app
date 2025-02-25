@@ -1,11 +1,14 @@
 package com.bit.myboardapp.service.impl;
 
 import com.bit.myboardapp.dto.BoardDto;
+import com.bit.myboardapp.dto.CommentDto;
 import com.bit.myboardapp.entity.Board;
 import com.bit.myboardapp.entity.BoardFile;
+import com.bit.myboardapp.entity.Comment;
 import com.bit.myboardapp.entity.User;
 import com.bit.myboardapp.repository.BoardFileRepository;
 import com.bit.myboardapp.repository.BoardRepository;
+import com.bit.myboardapp.repository.CommentRepository;
 import com.bit.myboardapp.repository.UserRepository;
 import com.bit.myboardapp.service.BoardService;
 import jakarta.transaction.Transactional;
@@ -13,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,25 +27,22 @@ public class BoardServiceImpl implements BoardService {
     private final UserRepository userRepository;
     private final BoardRepository boardRepository;
     private final BoardFileRepository boardFileRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<Board> findBoards(String title, String nickname) {
-
         return boardRepository.findByTitleAndNickname(title, nickname);
     }
 
     @Override
     public BoardDto post(BoardDto boardDto, String email) {
 
-        // email로 유저 조회
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid user email."));
 
-        // User 정보 매핑
         Board board = boardDto.toEntity(user);
         board.setCreatedDate(java.time.LocalDateTime.now());
 
-        // BoardFile 엔티티 생성 및 값 세팅
         if (boardDto.getBoardFiles() != null && !boardDto.getBoardFiles().isEmpty()) {
             List<BoardFile> boardFiles = boardDto.getBoardFiles().stream()
                     .map(fileDto -> BoardFile.builder()
@@ -60,18 +61,19 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    public BoardDto updateBoard(Long boardId, BoardDto boardDto) {
+    public BoardDto updateBoard(Long boardId, BoardDto boardDto, String email) {
 
-        // 기존 게시글 가져오기
         Board existingBoard = boardRepository.findById(boardId).orElseThrow(
                 () -> new IllegalArgumentException("Board with id " + boardId + " not found")
         );
 
-        // 제목, 내용 업데이트
+        if(existingBoard.getUser().getEmail().equals(email)){
+            throw new SecurityException("You do not have permission to update this board.");
+        }
+
         existingBoard.setTitle(boardDto.getTitle() != null ? boardDto.getTitle() : existingBoard.getTitle());
         existingBoard.setContent(boardDto.getContent() != null ? boardDto.getContent() : existingBoard.getContent());
 
-        // 기존 파일 리스트 가져오기
         List<BoardFile> existingFiles = existingBoard.getBoardFiles();
 
         // 삭제할 파일 처리 (요청 데이터에 제거할 ID를 받음)
@@ -84,7 +86,6 @@ public class BoardServiceImpl implements BoardService {
                     .filter(file -> file.getBoard().getBoardId().equals(boardId))  // 종속된 파일만 필터링
                     .toList();
 
-            // 요청한 파일 중 게시글에 속하지 않는 파일이 있다면 예외 발생
             if (filesToDelete.size() != deleteFileIds.size()) {
                 throw new IllegalStateException("Some files do not belong to the current board!");
             }
@@ -96,7 +97,6 @@ public class BoardServiceImpl implements BoardService {
         // 추가할 파일 처리
         if(boardDto.getBoardFiles() != null && !boardDto.getBoardFiles().isEmpty()){
 
-            // Dto에서 BoardFile 엔티티로 새 파일 리스트 변환
             List<BoardFile> newFiles = boardDto.getBoardFiles().stream()
                     .map(fileDto -> BoardFile.fromDto(existingBoard, fileDto)) // DTO -> 엔티티 변환
                     .toList();
@@ -104,25 +104,122 @@ public class BoardServiceImpl implements BoardService {
             existingFiles.addAll(newFiles);
         }
 
-        // 변경된 게시글 저장
         existingBoard.setBoardFiles(existingFiles);
         existingBoard.setModifiedDate(java.time.LocalDateTime.now());
 
-        // 저장된 게시글 Dto 반환
         return boardRepository.save(existingBoard).toDto();
     }
 
     @Override
-    public BoardDto getBoardById(Long boardId) {
+    public void deleteBoard(Long boardId, String email) {
 
         Board board = boardRepository.findById(boardId).orElseThrow(
                 () -> new IllegalArgumentException("Board with id " + boardId + " not found")
         );
 
-        // 조휘수 증가
-        increaseViewCount(board);
+        if(board.getUser().getEmail().equals(email)){
+            throw new SecurityException("You do not have permission to delete this board.");
+        }
 
-        return board.toDto();
+        boardRepository.delete(board);
+    }
+
+    @Override
+    public BoardDto getBoardWithComments(Long boardId) {
+
+        Board board = boardRepository.findByIdWithComments(boardId).orElseThrow(
+                () -> new IllegalArgumentException("Board with id " + boardId + " not found")
+        );
+
+        increaseViewCount(board);
+        BoardDto boardDto = board.toDto();
+
+        List<CommentDto> commentDtos = board.getComments().stream()
+                .map(comment -> {
+                    CommentDto commentDto = new CommentDto(comment);
+                    commentDto.setNickname(comment.getUser().getNickname());
+                    return commentDto;
+                }).toList();
+
+        boardDto.setComments(commentDtos);
+
+        return boardDto;
+    }
+
+    @Override
+    public CommentDto writeComment(Long boardId, CommentDto commentDto, String email) {
+
+        Board board = boardRepository.findById(boardId).orElseThrow(
+                () -> new IllegalArgumentException("Board with id " + boardId + " not found")
+        );
+
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("User with email " + email + " not found")
+        );
+
+        Comment comment = Comment.builder()
+                .content(commentDto.getContent())
+                .createdDate(LocalDateTime.now())
+                .modifiedDate(commentDto.getModifiedDate())
+                .board(board)
+                .user(user).build();
+
+        commentRepository.save(comment);
+
+        CommentDto resultCommentDto = new CommentDto(comment);
+        resultCommentDto.setNickname(user.getNickname());
+        return resultCommentDto;
+    }
+
+    @Override
+    public CommentDto updateComment(Long boardId, CommentDto commentDto, String email) {
+
+        if(boardRepository.findById(boardId).isEmpty()){
+            throw new IllegalArgumentException("Board with id " + boardId + " not found");
+        }
+
+        Comment comment = commentRepository.findById(commentDto.getCommentId()).orElseThrow(
+                () -> new IllegalArgumentException("Comment with id " + commentDto.getCommentId() + " not found")
+        );
+
+        if(!comment.getUser().getEmail().equals(email)){
+            throw new SecurityException("You do not have permission to update this comment.");
+        }
+
+        String existingContent = comment.getContent();
+        String newContent = commentDto.getContent();
+
+        if (newContent == null || newContent.trim().isEmpty()) {
+            throw new IllegalArgumentException("Comment content cannot be null or empty.");
+        }
+
+        if (existingContent.equals(newContent)) {
+            throw new IllegalArgumentException("New content is the same as the existing content. Update skipped.");
+        }
+
+        comment.setContent(newContent);
+        comment.setModifiedDate(LocalDateTime.now());
+        Comment savedComment = commentRepository.save(comment);
+
+        return new CommentDto(savedComment);
+    }
+    
+    @Override
+    public void deleteComment(Long boardId, Long commentId, String email) {
+
+        if(boardRepository.findById(boardId).isEmpty()){
+            throw new IllegalArgumentException("Board with id " + boardId + " not found");
+        }
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(
+                () -> new IllegalArgumentException("Comment with id " + commentId + " not found")
+        );
+
+        if(!comment.getUser().getEmail().equals(email)){
+            throw new SecurityException("You do not have permission to delete this comment.");
+        }
+
+        commentRepository.delete(comment);
     }
 
     @Transactional
