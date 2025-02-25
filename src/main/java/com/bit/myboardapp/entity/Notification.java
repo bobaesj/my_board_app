@@ -3,6 +3,8 @@ package com.bit.myboardapp.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @SequenceGenerator(
         name = "NotificationSeqGenerator",
@@ -25,8 +27,22 @@ public class Notification {
     private Long noticeId;
 
     @ManyToOne
-    @JoinColumn(name = "receiverId", referencedColumnName = "userId")
+    @JoinColumn(name = "receiverId", referencedColumnName = "userId", nullable = false)
     private User user;
-    private int senderId;
+
+    @ManyToOne
+    @JoinColumn(name = "senderId", referencedColumnName = "userId", nullable = false)
+    private User sender;
+
+    @Column(nullable = false)
+    private boolean isRead = false;
+
+    @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private Long relatedEntityId;
+
+    @Column(nullable = false)
+    private LocalDateTime createdDate = LocalDateTime.now();
 }
