@@ -43,6 +43,5 @@ public class BoardFile {
                 .fileSize(fileDto.getFileSize())
                 .build();
     }
-
 }
 

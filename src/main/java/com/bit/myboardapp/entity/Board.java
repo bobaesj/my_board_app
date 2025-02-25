@@ -39,6 +39,7 @@ public class Board {
     private LocalDateTime modifiedDate;
 
     @Column(nullable = false)
+    @Builder.Default
     private Long viewCount = 0L;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

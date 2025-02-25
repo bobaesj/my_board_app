@@ -25,4 +25,12 @@ public class GlobalExceptionhandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDto);
     }
 
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ResponseDto<Void>> handleSecurityException(SecurityException ex) {
+        ResponseDto<Void> responseDto = new ResponseDto<>();
+        responseDto.setStatusCode(HttpStatus.FORBIDDEN.value());
+        responseDto.setStatusMessage(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(responseDto);
+    }
+
 }
