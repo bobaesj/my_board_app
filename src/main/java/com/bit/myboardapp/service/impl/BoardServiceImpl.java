@@ -38,6 +38,7 @@ public class BoardServiceImpl implements BoardService {
 
         Board board = boardDto.toEntity(user);
         board.setCreatedDate(java.time.LocalDateTime.now());
+        board.setViewCount(0L);
 
         if (boardDto.getBoardFiles() != null && !boardDto.getBoardFiles().isEmpty()) {
             List<BoardFile> boardFiles = boardDto.getBoardFiles().stream()
@@ -63,7 +64,7 @@ public class BoardServiceImpl implements BoardService {
                 () -> new IllegalArgumentException("Board with id " + boardId + " not found")
         );
 
-        if(existingBoard.getUser().getEmail().equals(email)){
+        if(!existingBoard.getUser().getEmail().equals(email)){
             throw new SecurityException("You do not have permission to update this board.");
         }
 
