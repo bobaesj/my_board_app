@@ -54,11 +54,11 @@ src/main/resources
 
 ## 3. 브랜치 구조
 
-main 브랜치
+1. main 브랜치
     -- 검증된 최종 코드를 병합하여 배포하는 브랜치
-develop 브랜치
+2. develop 브랜치
     -- 개발 중인 코드와 기능 브랜치를 병합하는 중심 브랜치
-feature 브랜치
+3. feature 브랜치
     -- 실제 개발을 진행하며 완료 시 develop에 병합하는 브랜치
 무엇을
 왜
