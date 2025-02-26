@@ -84,18 +84,22 @@ main                  # 최종 배포 브랜치
 
 ![ERD 다이어그램](https://drive.google.com/uc?export=view&id=1OZp78weXdnxBW8vrNe2dfx6jgKhPQ_M2)
 
-**`MySQL Workbench`**
-   -  **로컬 데이터베이스는 MySQL Workbench를 사용하여 관리**
-
 **`Postman`**
    -  **기능 구현 테스트는 Postman을 활용**
+
+![Postman](https://drive.google.com/uc?export=view&id=1DVCqdgDvz2Qs_ww0p1GO0ogKB62GVQ4-)
 
 **`Sourcetree`**
    -  **Git 작업은 Sourcetree를 이용**
 
+![SourceTree](https://drive.google.com/uc?export=view&id=1E3KKUc3uUL4BOR1j-DWEI9AJwGTWVORl)
+
 **`Jwt`**
    -  **인증 및 보안 관리는 JWT를 사용**
-   
+
+**`MySQL Workbench`**
+   -  **로컬 데이터베이스는 MySQL Workbench를 사용하여 관리**
+     
 ## 5. 마무리하면서
 
 MVC 아키텍처 및 계층형 구조의 장점과 중요성을 느낄 수 있었습니다. 특히, Controller, Service, Repository로 역할을 분리함으로써 유지보수가 쉽고 구조적으로 명확한 코드를 작성할 수 있었습니다.
