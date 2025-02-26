@@ -79,6 +79,9 @@ main                  # 최종 배포 브랜치
 
 ## 4. 사용기술/개발환경
 
+**`ERD Cloud`**
+   -  **ERD Cloud활용한 간단한 DB설계**
+
 **`MySQL Workbench`**
    -  **로컬 데이터베이스는 MySQL Workbench를 사용하여 관리**
 
