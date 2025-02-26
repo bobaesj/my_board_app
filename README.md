@@ -64,8 +64,18 @@ src/main/resources
 **`feature` 브랜치**
    -  **실제 개발을 진행하며 완료 시 develop에 병합하는 브랜치**
 
-무엇을
-왜
-어떻게
+```
+main                  # 최종 배포 브랜치
+│
+└── develop           # 모든 기능이 병합되는 개발 브랜치
+   │         
+   ├── feature/user             #  유저 관련 기능 개발 브랜치
+   │   
+   ├── feature/board            #  게시판 관련 기능 개발 브랜치
+   │   
+   └── feature/notification     #  알림 관련 기능 개발 브랜치
+
+```
+
 차이점
 느낀점
