@@ -77,5 +77,15 @@ main                  # 최종 배포 브랜치
 
 ```
 
+## 4. 사용기술/개발환경
+
+**`MySQL Workbench`**
+   -  **로컬 데이터베이스는 MySQL Workbench를 사용하여 관리했습니다.**
+
+**`Postman`**
+   -  **기능 구현 테스트는 Postman을 활용했습니다.**
+
+**`Sourcetree`**
+   -  **Git 작업은 Sourcetree를 이용했습니다.**
 차이점
 느낀점
