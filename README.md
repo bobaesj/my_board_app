@@ -81,7 +81,7 @@ main                  # 최종 배포 브랜치
 
 **`ERD Cloud`**
    -  **ERD Cloud활용한 간단한 DB설계**
-   -  
+
 ![ERD 다이어그램](https://drive.google.com/uc?export=view&id=1OZp78weXdnxBW8vrNe2dfx6jgKhPQ_M2)
 
 **`MySQL Workbench`**
