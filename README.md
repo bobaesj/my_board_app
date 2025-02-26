@@ -81,6 +81,7 @@ main                  # 최종 배포 브랜치
 
 **`ERD Cloud`**
    -  **ERD Cloud활용한 간단한 DB설계**
+[ERD 다이어그램](https://drive.google.com/file/d/1OZp78weXdnxBW8vrNe2dfx6jgKhPQ_M2/view?usp=drive_link!)
 
 **`MySQL Workbench`**
    -  **로컬 데이터베이스는 MySQL Workbench를 사용하여 관리**
